@@ -1,0 +1,354 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  gh-dash — Kanagawa Wave Theme                              ║
+# ║  GitHub Dashboard for the Terminal                          ║
+# ║  Config: ~/.config/gh-dash/config.yml                       ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+# ── Preferences ──────────────────────────────────────────────
+dateFormat: relative    # "relative" | "short" | RFC3339 etc.
+dateLocale: en-US
+
+# ── Diff Pager ───────────────────────────────────────────────
+# Uses delta with Kanagawa-like colors for beautiful diffs
+pager:
+  diff: "delta --side-by-side --line-numbers --syntax-theme=Dracula --minus-style='syntax #43242B' --plus-style='syntax #2B3328' --minus-emph-style='syntax #FF5D62' --plus-emph-style='syntax #98BB6C' --line-numbers-minus-style='#E46876' --line-numbers-plus-style='#98BB6C' --line-numbers-zero-style='#54546D' --hunk-header-style='syntax bold' --file-style='#7E9CD8 bold' --file-decoration-style='#54546D underline'"
+
+# ── PR Sections ──────────────────────────────────────────────
+prSections:
+  - title: " My PRs"
+    filters: "is:open author:@me"
+    layout:
+      author:
+        hidden: true
+        width: 5
+      assignees:
+        hidden: true
+      reviewStatus:
+        width: 5
+      base:
+        width: 15
+      lines:
+        width: 12
+      updatedAt:
+        width: 10
+
+  - title: " Review Requested"
+    filters: "is:open review-requested:@me"
+    layout:
+      author:
+        width: 12
+      assignees:
+        hidden: true
+      reviewStatus:
+        width: 5
+      base:
+        width: 15
+      lines:
+        width: 12
+      updatedAt:
+        width: 10
+
+  - title: " Involved"
+    filters: "is:open involves:@me -author:@me -review-requested:@me"
+    layout:
+      author:
+        width: 12
+      assignees:
+        hidden: true
+      reviewStatus:
+        width: 5
+      base:
+        width: 15
+      lines:
+        width: 12
+      updatedAt:
+        width: 10
+
+  - title: " Recently Merged"
+    filters: "is:merged author:@me sort:updated-desc"
+    limit: 15
+    layout:
+      author:
+        hidden: true
+      assignees:
+        hidden: true
+      reviewStatus:
+        width: 5
+      base:
+        width: 15
+      lines:
+        width: 12
+      updatedAt:
+        width: 10
+
+# ── Issue Sections ───────────────────────────────────────────
+issuesSections:
+  - title: " My Issues"
+    filters: "is:open author:@me"
+    layout:
+      author:
+        hidden: true
+      assignees:
+        width: 12
+      updatedAt:
+        width: 10
+
+  - title: " Assigned"
+    filters: "is:open assignee:@me"
+    layout:
+      author:
+        width: 12
+      assignees:
+        hidden: true
+      updatedAt:
+        width: 10
+
+  - title: " Mentioned"
+    filters: "is:open mentions:@me"
+    layout:
+      author:
+        width: 12
+      assignees:
+        width: 12
+      updatedAt:
+        width: 10
+
+# ── Notification Sections ────────────────────────────────────
+notificationSections:
+  - title: " Unread"
+    filters: is:unread
+
+  - title: " Participating"
+    filters: is:unread reason:participating
+
+  - title: " Review"
+    filters: is:unread reason:review_requested
+
+  - title: " All Read"
+    filters: is:read
+
+# ── Repository Paths ────────────────────────────────────────
+# Map GitHub repos to local directories for quick access
+# Add your repos here as you work with them:
+# repoPaths:
+#   migbyte-0/my-project: ~/code/my-project
+
+# ── Defaults ─────────────────────────────────────────────────
+defaults:
+  preview:
+    open: true
+    width: 55
+  prsLimit: 20
+  issuesLimit: 20
+  view: prs
+  layout:
+    prs:
+      updatedAt:
+        width: 10
+      repo:
+        width: 18
+      author:
+        width: 12
+      assignees:
+        hidden: true
+        width: 10
+      base:
+        width: 15
+      lines:
+        width: 12
+      reviewStatus:
+        width: 5
+    issues:
+      updatedAt:
+        width: 10
+      repo:
+        width: 18
+      creator:
+        width: 12
+      assignees:
+        width: 12
+  refetchIntervalMinutes: 30
+
+# ── Keybindings ──────────────────────────────────────────────
+keybindings:
+  # ── Universal / Navigation ──
+  universal:
+    - key: "?"
+      builtin: help
+    - key: "q"
+      builtin: quit
+    - key: "j"
+      builtin: down
+    - key: "k"
+      builtin: up
+    - key: "ctrl+d"
+      builtin: pageDown
+    - key: "ctrl+u"
+      builtin: pageUp
+    - key: "g"
+      builtin: firstLine
+    - key: "G"
+      builtin: lastLine
+    - key: "h"
+      builtin: prevSection
+    - key: "l"
+      builtin: nextSection
+    - key: "/"
+      builtin: search
+    - key: "shift+tab"
+      builtin: prevView
+    - key: "tab"
+      builtin: nextView
+    - key: "r"
+      builtin: refresh
+    - key: "R"
+      builtin: refreshAll
+    - key: "enter"
+      builtin: open
+    - key: "b"
+      builtin: openInBrowser
+
+  # ── PR-Specific ──
+  prs:
+    # Diff with delta
+    - key: "d"
+      builtin: diff
+
+    # Checkout PR branch
+    - key: "c"
+      builtin: checkout
+
+    # Reopen
+    - key: "o"
+      builtin: reopen
+
+    # Close
+    - key: "x"
+      builtin: close
+
+    # Ready for review
+    - key: "W"
+      builtin: ready
+
+    # Merge
+    - key: "M"
+      builtin: merge
+
+    # Watch CI checks
+    - key: "w"
+      builtin: watchChecks
+
+    # ENHANCE — view CI/CD checks in TUI
+    - key: "T"
+      command: "ENHANCE_THEME=kanagawa gh enhance -R {{.RepoName}} {{.PrNumber}}"
+
+    # diffnav — view PR diff with file tree
+    - key: "D"
+      command: "gh pr diff {{.PrNumber}} --repo {{.RepoName}} | diffnav"
+
+    # View full PR in terminal via gh
+    - key: "v"
+      command: "gh pr view {{.PrNumber}} --repo {{.RepoName}}"
+
+    # Review PR interactively
+    - key: "V"
+      command: "gh pr review {{.PrNumber}} --repo {{.RepoName}}"
+
+    # Approve PR
+    - key: "A"
+      command: "gh pr review {{.PrNumber}} --repo {{.RepoName}} --approve --body '✅ LGTM'"
+
+    # Request changes
+    - key: "X"
+      command: "gh pr review {{.PrNumber}} --repo {{.RepoName}} --request-changes"
+
+    # Comment on PR
+    - key: "C"
+      command: "gh pr comment {{.PrNumber}} --repo {{.RepoName}} --editor"
+
+    # Copy PR URL to clipboard
+    - key: "y"
+      command: "gh pr view {{.PrNumber}} --repo {{.RepoName}} --json url --jq '.url' | pbcopy"
+
+    # Copy branch name to clipboard
+    - key: "Y"
+      command: "echo '{{.HeadRefName}}' | pbcopy"
+
+    # Open PR diff in Neovim with diffview
+    - key: "e"
+      command: >
+        cd {{.RepoPath}} &&
+        git fetch origin {{.HeadRefName}} &&
+        nvim -c 'DiffviewOpen {{.BaseRefName}}...origin/{{.HeadRefName}}'
+
+    # Open in lazygit
+    - key: "L"
+      command: "cd {{.RepoPath}} && lazygit"
+
+  # ── Issue-Specific ──
+  issues:
+    # Assign to self
+    - key: "a"
+      builtin: assign
+
+    # Unassign
+    - key: "A"
+      builtin: unassign
+
+    # Comment
+    - key: "c"
+      builtin: comment
+
+    # Close
+    - key: "x"
+      builtin: close
+
+    # Reopen
+    - key: "o"
+      builtin: reopen
+
+    # View full issue in terminal
+    - key: "v"
+      command: "gh issue view {{.IssueNumber}} --repo {{.RepoName}}"
+
+    # Copy issue URL to clipboard
+    - key: "y"
+      command: "gh issue view {{.IssueNumber}} --repo {{.RepoName}} --json url --jq '.url' | pbcopy"
+
+    # Create branch from issue
+    - key: "B"
+      command: "gh issue develop {{.IssueNumber}} --repo {{.RepoName}} --checkout"
+
+  # ── Notification-Specific ──
+  notifications:
+    - key: "m"
+      builtin: markAsRead
+    - key: "M"
+      builtin: markAllAsRead
+    - key: "u"
+      builtin: unmark
+
+# ── Theme — Kanagawa Wave ────────────────────────────────────
+theme:
+  ui:
+    sectionsShowCount: true
+    table:
+      showSeparator: true
+      compact: false
+
+  colors:
+    text:
+      primary: "#DCD7BA"       # fujiWhite
+      secondary: "#C8C093"     # oldWhite
+      inverted: "#1F1F28"      # sumiInk1
+      faint: "#54546D"         # sumiInk4
+      warning: "#FF5D62"       # peachRed
+      success: "#98BB6C"       # springGreen
+
+    background:
+      selected: "#2D4F67"      # waveBlue2
+
+    border:
+      primary: "#54546D"       # sumiInk4
+      secondary: "#727169"     # fujiGray
+      faint: "#16161D"         # sumiInk0

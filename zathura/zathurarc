@@ -1,0 +1,8 @@
+
+set recolor-foreground "#000000"  # Black text
+set recolor-background "#FFFFFF"  # White background
+set adjust-open "best-fit"
+set recolor "true"
+set smooth-scroll "true"
+set zoom-step 1.2
+

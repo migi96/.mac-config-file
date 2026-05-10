@@ -1,0 +1,56 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  diffnav — Kanagawa Wave Configuration                      ║
+# ║  Git Diff Pager with File Tree (a la GitHub)                ║
+# ║  Config: ~/.config/diffnav/config.yml                       ║
+# ╚══════════════════════════════════════════════════════════════╝
+#
+# diffnav is set as the global git diff pager:
+#   git config --global pager.diff diffnav
+#
+# Usage:
+#   git diff                               # automatic via pager config
+#   git diff | diffnav                     # piped explicitly
+#   gh pr diff <url> | diffnav             # GitHub PR diffs
+#   diffnav --watch                        # live-reload unstaged changes
+#   diffnav --watch-cmd "git diff HEAD"    # watch specific diff command
+#
+# Delta is used under the hood for syntax highlighting.
+# Delta config is read from ~/.gitconfig or ~/.config/delta/config.
+#
+# ── UI Settings ──────────────────────────────────────────────
+
+ui:
+  # Show the file tree sidebar on startup (toggle with 'e')
+  showFileTree: true
+
+  # Width of the file tree sidebar in columns
+  fileTreeWidth: 30
+
+  # Width of the search/go-to panel (opened with 't')
+  searchTreeWidth: 55
+
+  # Icon style for the file tree
+  #   nerd-fonts-status   — boxed git status icons colored by change type
+  #   nerd-fonts-simple   — generic file icon colored by change type
+  #   nerd-fonts-filetype — language-specific file icons colored by change type
+  #   nerd-fonts-full     — both status + filetype icons, fully colored
+  #   unicode             — Unicode symbols (+/x/*)
+  #   ascii               — plain ASCII characters
+  icons: nerd-fonts-full
+
+  # Color filenames in the tree by their git status
+  # (green=added, red=deleted, yellow=modified)
+  colorFileNames: true
+
+  # Show +/- line count stats next to each file in the tree
+  showDiffStats: true
+
+  # Use side-by-side diff view (false = unified/inline view)
+  # Can be toggled at runtime with 's'
+  sideBySide: true
+
+  # Hide the DIFFNAV header bar to maximize screen space
+  hideHeader: false
+
+  # Hide the footer keybindings help bar
+  hideFooter: false

@@ -1,0 +1,58 @@
+# Ghostty Configuration
+# FontSettings
+font-family= ProFontIIxNerdFont-Regular
+# Fallback font for Arabic glyphs
+font-family = "Noto Sans Arabic"
+font-size = 24
+
+# Colours & transparency
+theme = ayu
+cursor-style = block
+adjust-cell-height = 35%
+mouse-hide-while-typing = true
+window-padding-balance = true
+window-save-state = always
+window-colorspace = "display-p3"
+background = #19202F 
+cursor-color = #5C58EB
+
+# Shell command for skitty-notes
+
+# keybindings
+keybind = cmd+n>n=new_window
+keybind = cmd+n>r=reload_config
+keybind = cmd+n>x=close_surface
+
+# tabs 
+keybind = cmd+n>e=new_tab
+keybind = cmd+n>f=next_tab
+keybind = cmd+n>d=previous_tab
+keybind = cmd+n>comma=move_tab:-1
+keybind = cmd+n>period=move_tab:1
+
+# quick tab switch
+keybind = cmd+n>1=goto_tab:1
+keybind = cmd+n>2=goto_tab:2
+keybind = cmd+n>3=goto_tab:3
+keybind = cmd+n>4=goto_tab:4
+keybind = cmd+n>5=goto_tab:5
+keybind = cmd+n>6=goto_tab:6
+keybind = cmd+n>7=goto_tab:7
+keybind = cmd+n>8=goto_tab:8
+keybind = cmd+n>9=goto_tab:9
+
+# split
+keybind = cmd+n>g=new_split:right
+keybind = cmd+n>w=new_split:down
+
+keybind = cmd+n>j=goto_split:bottom
+keybind = cmd+n>k=goto_split:top
+keybind = cmd+n>h=goto_split:left
+keybind = cmd+n>l=goto_split:right
+
+keybind = cmd+n>t=toggle_split_zoom
+keybind = cmd+n>i=equalize_splits
+
+# other
+copy-on-select = clipboard
+

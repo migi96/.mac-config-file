@@ -1,0 +1,6 @@
+{
+  "enable-web": true,
+  "enable-macos-desktop": true,
+  "enable-ios": true,
+  "ios-signing-cert": "Apple Development: migdad ali (3PF5NHGB49)"
+}

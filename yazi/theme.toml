@@ -1,0 +1,8 @@
+[flavor]
+# dark = "gruvbox-dark"
+# use = "everforest-medium"
+# dark = "ashen"
+# dark = "nightfly"
+# light = "nightfly"
+light = "catppuccin-mocha"
+dark = "catppuccin-mocha"

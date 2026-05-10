@@ -1,0 +1,50 @@
+[manager]
+# Panel layout ratio
+ratio = [1, 4, 3]
+
+# File sorting preferences
+sort_by = "natural"
+sort_sensitive = false
+sort_reverse = false
+sort_dir_first = true
+sort_translit = true
+
+# Line mode for displaying file information
+linemode = "size"
+
+# Display hidden files
+show_hidden = true
+show_symlink = true
+
+# Scroll behavior
+scrolloff = 3
+
+# Mouse event configuration
+mouse_events = ["click", "scroll"]
+
+# Title format
+title_format = "{cwd}"
+
+[preview]
+# Preview configuration for images and text
+wrap = "yes"
+tab_size = 4
+max_width = 100
+max_height = 60
+cache_dir = "/tmp/yazi_cache"
+image_delay = 100
+image_filter = "lanczos3"
+image_quality = 80
+sixel_fraction = 15
+ueberzug_scale = 1.0
+ueberzug_offset = [0, 0, 0, 0]
+
+[[opener.rules]]
+# Default rule for opening files
+if = "true"
+run = "nvim \"{path}\""
+
+[keybinds]
+# Keybinds for quick operations
+reload_config = "Ctrl+R"
+toggle_hidden = "."

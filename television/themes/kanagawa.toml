@@ -1,0 +1,33 @@
+# ════════════════════════════════════════════════════════════════════════════════
+#  Kanagawa Theme for Television
+#  Based on the Kanagawa color palette (restedoracle/kanagawa.nvim)
+#  Wave variant — dark background with muted, ink-inspired tones
+# ════════════════════════════════════════════════════════════════════════════════
+
+# General
+background = "#1F1F28"       # sumiInk1 (main bg)
+border_fg = "#54546D"        # sumiInk4 (subtle borders)
+text_fg = "#DCD7BA"          # fujiWhite (main foreground)
+dimmed_text_fg = "#727169"   # fujiGray (comments/dimmed)
+
+# Input
+input_text_fg = "#E6C384"    # carpYellow (input stands out)
+result_count_fg = "#FF9E3B"  # surimiOrange (count badge)
+
+# Results
+result_name_fg = "#7E9CD8"   # crystalBlue (filenames/identifiers)
+result_line_number_fg = "#E6C384"  # carpYellow (line numbers)
+result_value_fg = "#9CABCA"  # fujiWhite dimmed (values)
+selection_bg = "#2D4F67"     # waveBlue2 (selection highlight)
+selection_fg = "#C8C093"     # lotusWhite3 (selected text)
+match_fg = "#FF5D62"         # peachRed (match highlight — high contrast)
+
+# Preview
+preview_title_fg = "#FFA066" # surimiOrange lighter (preview titles)
+
+# Modes
+channel_mode_fg = "#1F1F28"  # sumiInk1 (dark text on badge)
+channel_mode_bg = "#957FB8"  # oniViolet (channel mode badge)
+remote_control_mode_fg = "#1F1F28"  # sumiInk1
+remote_control_mode_bg = "#98BB6C"  # springGreen (remote mode badge)
+send_to_channel_mode_fg = "#7FB4CA" # springBlue

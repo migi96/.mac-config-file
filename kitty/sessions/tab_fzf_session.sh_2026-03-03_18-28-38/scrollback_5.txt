@@ -1,0 +1,2 @@
+No saved sessions found in /Users/migbyte/.config/kitty/sessions
+Use ctrl+alt+w to save all sessions first.

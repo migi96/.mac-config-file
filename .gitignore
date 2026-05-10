@@ -1,0 +1,101 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ===== SECRETS / CREDENTIALS =====
+# GitHub CLI
+gh/hosts.yml
+gh/state.yml
+
+# Google Cloud SDK
+gcloud/
+
+# GitHub Copilot
+github-copilot/
+
+# npm / CLI configstore (often holds tokens)
+configstore/
+
+# Firebase auth
+firebase/
+
+# Git credentials
+git/
+
+# Cloud / API tokens generally
+*.db
+*.sqlite
+*.sqlite3
+*credentials*
+*token*
+*.pem
+*.key
+*.crt
+*.cer
+*_rsa
+*_ed25519
+.netrc
+
+# AI agents / tools (commonly hold provider API keys)
+goose/
+opencode/
+avante.nvim/
+cagent/
+raycast/
+.opencode/
+.goose/
+*.db-shm
+*.db-wal
+
+# Local Valet (contains local CA + private keys)
+valet/CA/
+valet/Certificates/
+valet/dnsmasq.d/
+valet/Log/
+valet/Nginx/
+valet/Sites/
+
+# Composer vendor dir
+composer/vendor/
+
+# node_modules anywhere
+node_modules/
+
+# Nushell env contains hardcoded API keys — never commit
+nushell/env.nu
+
+# Vendored editor/tmux plugins (managed by package managers)
+nvim/pack/
+tmux/plugins/
+
+# Plugin / lazy locks can be regenerated
+**/lazy-lock.json
+
+# ===== POTENTIALLY PERSONAL DATA =====
+atuin/
+htop/
+psysh/
+mpv/
+nchat/
+karabiner/
+kernel/
+herd-lite/
+
+# ===== LOGS & CACHE =====
+*.log
+logs/
+cache/
+Cache/
+.cache/
+
+# ===== EDITOR / IDE =====
+.vscode/
+.idea/
+
+# ===== TEMP =====
+*.swp
+*.swo
+*~
+*.tmp

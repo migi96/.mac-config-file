@@ -1,0 +1,65 @@
+-- lua/migbyte/plugins/telescope_laravel_make.lua  ----------------------------
+return {
+  -- we “attach” to Telescope so Lazy can index the spec
+  "nvim-telescope/telescope.nvim",
+
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    {
+      "folke/which-key.nvim",
+      opts = function(_, _)
+      end,
+    },
+  },
+
+  keys = {
+    {
+      "<leader>lmm",
+      function() require("migbyte.laravel_make").make_model() end,
+      desc = "New Model",
+      silent = true
+    },
+
+    {
+      "<leader>lmc",
+      function() require("migbyte.laravel_make").make_controller() end,
+      desc = "New Controller",
+      silent = true
+    },
+
+    {
+      "<leader>lmp",
+      function() require("migbyte.laravel_make").make_provider() end,
+      desc = "New Provider",
+      silent = true
+    },
+
+    {
+      "<leader>lmf",
+      function() require("migbyte.laravel_make").make_factory() end,
+      desc = "New Factory",
+      silent = true
+    },
+
+    {
+      "<leader>lmM",
+      function() require("migbyte.laravel_make").make_migration() end,
+      desc = "New Migration",
+      silent = true
+    },
+
+    {
+      "<leader>lms",
+      function() require("migbyte.laravel_make").make_seeder() end,
+      desc = "New Seeder",
+      silent = true
+    },
+
+    {
+      "<leader>lmi",
+      function() require("migbyte.laravel_make").make_view() end,
+      desc = "New Blade View",
+      silent = true
+    },
+  },
+}

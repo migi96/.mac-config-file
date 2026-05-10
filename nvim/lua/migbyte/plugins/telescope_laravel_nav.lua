@@ -1,0 +1,81 @@
+-- lua/migbyte/plugins/telescope_laravel_nav.lua  -----------------------------
+return {
+  "nvim-telescope/telescope.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    {
+      "folke/which-key.nvim",
+      opts = function(_, _)
+      end,
+    },
+  },
+
+  keys = {
+    {
+      "<leader>lvm",
+      function() require("migbyte.laravel_nav").telescope_into("app/Models") end,
+      desc = "Models",
+      silent = true
+    },
+    {
+      "<leader>lvh",
+      function() require("migbyte.laravel_nav").telescope_into("app/Http") end,
+      desc = "Http",
+      silent = true
+    },
+
+    {
+
+      "<leader>lvc",
+      function() require("migbyte.laravel_nav").telescope_into("app/Http/Controllers") end,
+      desc = "Controllers",
+      silent = true
+    },
+    {
+      "<leader>lvp",
+      function() require("migbyte.laravel_nav").telescope_into("app/Http/Providers") end,
+      desc = "Providers",
+      silent = true
+    },
+    {
+      "<leader>lvf",
+      function() require("migbyte.laravel_nav").telescope_into("database/factories") end,
+      desc = "Factories",
+      silent = true
+    },
+
+    -- Models already on lvm, so migrations go on **capital M**
+    {
+      "<leader>lvM",
+      function() require("migbyte.laravel_nav").telescope_into("database/migrations") end,
+      desc = "Migrations",
+      silent = true
+    },
+
+    {
+      "<leader>lvs",
+      function() require("migbyte.laravel_nav").telescope_into("database/seeders") end,
+      desc = "Seeders",
+      silent = true
+    },
+    {
+      "<leader>lvi",
+      function() require("migbyte.laravel_nav").telescope_into("resources/views") end,
+      desc = "Views",
+      silent = true
+    },
+
+    {
+      "<leader>lvu",
+      function() require("migbyte.laravel_nav").telescope_into("routes/web.php") end,
+      desc = "routes/web.php",
+      silent = true
+    },
+    {
+      "<leader>lvb",
+      function() require("migbyte.laravel_nav").telescope_into("routes/api.php") end,
+      desc = "routes/api.php",
+      silent = true
+    },
+  },
+}
