@@ -70,6 +70,12 @@ open_notification_target = "prefix+shift+o"
 [keys.indexed]
 tabs = "alt"
 
+# ---- Graphics --------------------------------------------------------------
+# Kitty graphics passthrough for panes (wisp renders WhatsApp images inline).
+# Without this, image apps inside herdr fall back to blocky unicode halfblocks.
+[experimental]
+kitty_graphics = true
+
 # ---- Custom commands -----------------------------------------------------
 # prefix+t -> jump to the "wisp" tab (WhatsApp TUI); if there is none, create a
 # tab labeled "wisp" and launch wisp automatically. Logic in scripts/wisp-tab.sh.
