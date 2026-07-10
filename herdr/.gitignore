@@ -1,0 +1,4 @@
+# Herdr runtime files — not config
+*.log
+*.sock
+session.json

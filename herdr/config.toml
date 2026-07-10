@@ -1,0 +1,101 @@
+onboarding = false
+# ============================================================================
+# Herdr configuration  —  ~/.config/herdr/config.toml
+# Keybindings ported from ~/.config/tmux/tmux.conf to keep tmux muscle memory.
+# Reload after edits:   herdr server reload-config
+# Print all defaults:   herdr --default-config
+# ============================================================================
+
+[theme]
+# tmux used omerxx/catppuccin-tmux
+name = "gruvbox"
+
+auto_switch = false
+
+# ---- New-tab behavior ----------------------------------------------------
+[terminal]
+new_cwd = "follow"              # new tab/pane opens in the current tab's dir
+                                # (tmux: new-window -c "#{pane_current_path}")
+
+[ui]
+prompt_new_tab_name = true      # prompt for a tab name when creating a new tab
+
+[keys]
+# tmux prefix was ^N  (default Ctrl-b -> Ctrl-n)
+prefix = "ctrl+n"
+
+# ---- General -------------------------------------------------------------
+reload_config   = "prefix+r"          # tmux: prefix r    reload config
+edit_scrollback = "prefix+e"          # tmux: prefix e    open scrollback in nvim
+
+# ---- Tabs  (= tmux windows) ----------------------------------------------
+new_tab      = "prefix+c"             # tmux: prefix c / M-c   new-window
+rename_tab   = "prefix+comma"         # tmux: prefix ,         rename-window
+previous_tab = "alt+h"                # tmux: M-h              previous-window
+next_tab     = "alt+l"                # tmux: M-l              next-window
+switch_tab   = "prefix+1..9"          # bonus: prefix 1..9 -> tab N
+close_tab    = "prefix+shift+x"       # tmux: prefix X         kill-window
+
+# ---- Panes ---------------------------------------------------------------
+split_vertical   = "prefix+|"         # tmux: prefix |    split side-by-side
+split_horizontal = "prefix+minus"     # tmux: prefix -    split stacked
+focus_pane_left  = "ctrl+h"           # direct, NO prefix: switch focus left
+focus_pane_right = "ctrl+l"           # direct, NO prefix: switch focus right
+focus_pane_down  = "prefix+j"         # tmux: prefix j
+focus_pane_up    = "prefix+k"         # tmux: prefix k
+close_pane       = "prefix+x"         # tmux: prefix x    kill-pane
+zoom             = "prefix+f"         # tmux: prefix f    resize-pane -Z (toggle zoom)
+resize_mode      = "prefix+ctrl+r"    # tmux resized with prefix+H/J/K/L; Herdr uses a resize mode
+rename_pane      = "prefix+shift+p"   # (Herdr extra; tmux had none)
+cycle_pane_next     = "prefix+tab"
+cycle_pane_previous = "prefix+shift+tab"
+
+# ---- Workspaces  (= tmux sessions) ---------------------------------------
+workspace_picker   = "prefix+ctrl+p"  # Ctrl-n then Ctrl-p -> open workspace picker
+new_workspace      = "prefix+ctrl+c"  # tmux: prefix C-c  new-session
+rename_workspace   = "prefix+shift+r" # tmux: prefix R    rename-session
+close_workspace    = "prefix+shift+q" # tmux: prefix Q    kill-session
+next_workspace     = "prefix+ctrl+j"  # tmux: prefix C-j  switch-client -n
+previous_workspace = "prefix+ctrl+k"  # tmux: prefix C-k  switch-client -p
+
+# ---- UI / misc -----------------------------------------------------------
+toggle_sidebar = "prefix+shift+s"     # tmux: prefix S    toggle status bar
+detach         = "prefix+d"           # tmux: prefix d    detach-client
+settings       = "prefix+s"           # (Herdr extra)
+help           = "prefix+?"           # (Herdr extra)
+goto           = "prefix+g"           # (Herdr extra)
+open_notification_target = "prefix+shift+o"
+
+# Direct Alt+1..9 -> jump to tab N   (tmux: M-1 .. M-9 select-window)
+[keys.indexed]
+tabs = "alt"
+
+# ---- Custom commands -----------------------------------------------------
+# prefix+t -> jump to the "wisp" tab (WhatsApp TUI); if there is none, create a
+# tab labeled "wisp" and launch wisp automatically. Logic in scripts/wisp-tab.sh.
+[[keys.command]]
+key = "prefix+t"
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/wisp-tab.sh"
+
+# prefix+n -> stage recent downloads/screenshots and signal wisp to open its
+# media picker on them (wisp sends the pick to its open chat, natively). Runs
+# detached; wisp shows the yazi picker itself. Logic in wisp-send-recent.sh.
+[[keys.command]]
+key = "prefix+n"
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/wisp-send-recent.sh"
+
+# ============================================================================
+# tmux bindings with NO Herdr equivalent (left unmapped):
+#   copy-mode (prefix v / M-v) + copy-mode-vi yank/search
+#       -> use prefix+e (edit_scrollback) to open scrollback in your editor,
+#          or mouse-select. Herdr has no tmux-style copy-mode keymap.
+#   swap-window  < >      swap-pane  { }       break-pane  b
+#   join-pane    j / @    mark/unmark pane  m / M
+#   synchronize-panes s   display-panes  q     clear-history  C-l
+#   last-window  M-Tab    -> no last-tab action (cycle with alt+h / alt+l)
+#   sesh connect (prefix 9) -> tmux/sesh-specific; not applicable to Herdr
+# tmux plugins (tpm, resurrect, continuum, floax, thumbs, fzf-url, catppuccin)
+#   are tmux-only; Herdr has built-in themes, a workspace picker, and worktrees.
+# ============================================================================
