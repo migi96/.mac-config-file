@@ -20,20 +20,40 @@ new_cwd = "follow"              # new tab/pane opens in the current tab's dir
 [ui]
 prompt_new_tab_name = true      # prompt for a tab name when creating a new tab
 
+agent_panel_sort = "priority"
 [keys]
 # tmux prefix was ^N  (default Ctrl-b -> Ctrl-n)
 prefix = "ctrl+n"
 
 # ---- General -------------------------------------------------------------
-reload_config   = "prefix+r"          # tmux: prefix r    reload config
-edit_scrollback = "prefix+e"          # tmux: prefix e    open scrollback in nvim
+reload_config   = "prefix+shift+r"    # moved off prefix+r (now agents); herdr default
+edit_scrollback = ""                  # replaced by scripts/edit-scrollback.sh (colored + full
+                                      # scrollback), wired to prefix+e via [[keys.command]] below
+# Copy / VISUAL mode (scroll + select) — prefix+v. It scrolls the pane itself, no
+# mouse needed. Keys INSIDE copy mode (from herdr v0.7.3 source):
+#   h/j/k/l or arrows  move cursor — k/Up PAST THE TOP EDGE SCROLLS UP
+#   ctrl+u / ctrl+d    half page up / down
+#   pgup/ctrl+b, pgdn/ctrl+f   full page up / down
+#   g / G              jump to TOP / BOTTOM of the whole scrollback
+#   w b e  0 $ ^  { }  word / line / paragraph motions
+#   v or space         start selection   V  line-wise selection
+#   y or enter         copy to clipboard & exit     q / esc  exit
+# Caveat: a pane running a full-screen app (claude, wisp, nvim) has NO
+# terminal scrollback — the app owns its screen, so there copy mode can only
+# see what's visible (scroll the app itself first; that part is inherent).
+copy_mode = "prefix+v"
 
 # ---- Tabs  (= tmux windows) ----------------------------------------------
-new_tab      = "prefix+c"             # tmux: prefix c / M-c   new-window
+# prefix+c now runs the zoxide+fzf new-tab picker (scripts/new-tab-zoxide.sh,
+# wired at the bottom via [[keys.command]]). The plain "blank tab here" action
+# moved to prefix+shift+c as an escape hatch.
+new_tab      = "prefix+shift+c"       # tmux: prefix c / M-c   new-window (plain blank tab)
 rename_tab   = "prefix+comma"         # tmux: prefix ,         rename-window
-previous_tab = "alt+h"                # tmux: M-h              previous-window
-next_tab     = "alt+l"                # tmux: M-l              next-window
-switch_tab   = "prefix+1..9"          # bonus: prefix 1..9 -> tab N
+# Tab navigation on prefix+a (next) / prefix+shift+a (previous). herdr has no
+# tab "picker", so this is single-shot next/prev rather than a held j/k mode.
+next_tab     = "prefix+a"             # prefix a       -> next tab
+previous_tab = "prefix+shift+a"       # prefix A       -> previous tab
+switch_tab   = "prefix+1..9"          # prefix 1..9 -> tab N (agents moved to the ctrl+... keys below)
 close_tab    = "prefix+shift+x"       # tmux: prefix X         kill-window
 
 # ---- Panes ---------------------------------------------------------------
@@ -44,24 +64,49 @@ focus_pane_right = "ctrl+l"           # direct, NO prefix: switch focus right
 focus_pane_down  = "prefix+j"         # tmux: prefix j
 focus_pane_up    = "prefix+k"         # tmux: prefix k
 close_pane       = "prefix+x"         # tmux: prefix x    kill-pane
-zoom             = "prefix+f"         # tmux: prefix f    resize-pane -Z (toggle zoom)
+zoom             = "prefix+z"         # was prefix+f (now focus-agent picker); herdr default
 resize_mode      = "prefix+ctrl+r"    # tmux resized with prefix+H/J/K/L; Herdr uses a resize mode
 rename_pane      = "prefix+shift+p"   # (Herdr extra; tmux had none)
-cycle_pane_next     = "prefix+tab"
-cycle_pane_previous = "prefix+shift+tab"
+# prefix+tab / prefix+shift+tab now cycle ALL tabs across ALL spaces (unified
+# next/prev — see scripts/cycle-tabs.sh, wired at the bottom via [[keys.command]]).
+# Pane cycling that used to live here is unbound; panes are still reachable via
+# focus_pane_left/right/up/down (ctrl+h / ctrl+l / prefix+j / prefix+k).
+cycle_pane_next     = ""
+cycle_pane_previous = ""
 
-# ---- Workspaces  (= tmux sessions) ---------------------------------------
-workspace_picker   = "prefix+ctrl+p"  # Ctrl-n then Ctrl-p -> open workspace picker
+# ---- Agents --------------------------------------------------------------
+# Agent navigation on prefix+/ (next) / prefix+r (previous). herdr has no
+# agent "picker", so this is single-shot next/prev rather than a held j/k mode.
+# (prefix+v is now visual/copy mode; herdr has no 3-key `prefix v /` sequence,
+#  so next-agent is a single prefix chord.)
+next_agent     = "prefix+/"           # prefix /       -> next agent
+previous_agent = "prefix+r"           # prefix r       -> previous agent
+# Jump straight to agent N: bound to the keys that used to switch kitty tabs
+# (ctrl+a / ctrl+alt+shift+z / ctrl+s / ctrl+q). herdr's indexed focus_agent only
+# supports a uniform modifier+1..9, so these non-uniform keys are wired as
+# [[keys.command]] entries at the bottom of this file via scripts/focus-agent.sh.
+focus_agent    = ""                   # (agent 1-4 -> the ctrl+... keys, see below)
+
+# ---- Workspaces / "spaces"  (= tmux sessions) ----------------------------
+# Spaces navigation: prefix, then Ctrl+p opens the workspace picker — a list you
+# navigate with j/k (or arrows), Enter to switch, Esc to cancel. (The picker
+# stays open while you move; you don't physically keep the keys held down.)
+workspace_picker   = "prefix+ctrl+p"  # prefix, then Ctrl+p -> spaces picker (j/k)
 new_workspace      = "prefix+ctrl+c"  # tmux: prefix C-c  new-session
-rename_workspace   = "prefix+shift+r" # tmux: prefix R    rename-session
+new_worktree       = "ctrl+alt+a"     # direct (no prefix) -> create a new worktree
+                                      # (ctrl+alt+a is free — it used to be kitty
+                                      #  new_tab, now disabled)
+rename_workspace   = "prefix+u"       # prefix u       -> rename the current space
 close_workspace    = "prefix+shift+q" # tmux: prefix Q    kill-session
-next_workspace     = "prefix+ctrl+j"  # tmux: prefix C-j  switch-client -n
-previous_workspace = "prefix+ctrl+k"  # tmux: prefix C-k  switch-client -p
+next_workspace     = "alt+tab"        # Option+Tab      -> next workspace
+previous_workspace = "alt+shift+tab"  # Option+Shift+Tab -> previous workspace
 
 # ---- UI / misc -----------------------------------------------------------
 toggle_sidebar = "prefix+shift+s"     # tmux: prefix S    toggle status bar
 detach         = "prefix+d"           # tmux: prefix d    detach-client
-settings       = "prefix+s"           # (Herdr extra)
+# Settings panel — where you switch the theme. Moved to prefix+l (was prefix+s,
+# now the spaces picker). herdr has no dedicated theme-cycle keybinding.
+settings       = "prefix+l"           # prefix l       -> settings / theme switcher
 help           = "prefix+?"           # (Herdr extra)
 goto           = "prefix+g"           # (Herdr extra)
 open_notification_target = "prefix+shift+o"
@@ -75,6 +120,15 @@ tabs = "alt"
 # Without this, image apps inside herdr fall back to blocky unicode halfblocks.
 [experimental]
 kitty_graphics = true
+# DISABLED for speed. This switched the macOS keyboard layout to ASCII on every
+# prefix ENTER and restored it on EXIT. That TIS input-source call is slow and
+# blocking on macOS, so the prefix felt laggy (switch on enter) and the terminal
+# froze on Escape (restore on exit). With it off, the prefix is instant — like it
+# was in kitty. Tradeoff: while the ARABIC input source is active, the keys AFTER
+# the prefix (s, r, a, …) won't register — tap the English layout first. The
+# prefix chord itself stays layout-independent via ghostty/config:
+# `keybind = ctrl+n=text:\x0e`. Set back to true to restore the old behavior.
+switch_ascii_input_source_in_prefix = false
 
 # ---- Custom commands -----------------------------------------------------
 # prefix+t -> jump to the "wisp" tab (WhatsApp TUI); if there is none, create a
@@ -84,23 +138,121 @@ key = "prefix+t"
 type = "shell"
 command = "/Users/migbyte/.config/herdr/scripts/wisp-tab.sh"
 
-# prefix+n -> stage recent downloads/screenshots and signal wisp to open its
-# media picker on them (wisp sends the pick to its open chat, natively). Runs
-# detached; wisp shows the yazi picker itself. Logic in wisp-send-recent.sh.
+# prefix+n -> GLOBAL "recent files" browser: stage the newest downloads +
+# screenshots and open yazi on them in a new tab (browse/open from anywhere).
+# (Sending a recent file to a WhatsApp chat is now the `f` key inside wisp.)
 [[keys.command]]
 key = "prefix+n"
 type = "shell"
-command = "/Users/migbyte/.config/herdr/scripts/wisp-send-recent.sh"
+command = "/Users/migbyte/.config/herdr/scripts/recent-files.sh"
+
+# prefix+c -> NEW-TAB PICKER (zoxide + fzf). Runs in a throwaway pane (type =
+# "pane"). Fuzzy-find a directory; the new tab opens IN it, named after it:
+#   <dir>        Enter -> shell tab in <dir>
+#   <dir> -c     Enter -> <dir> + `claude`
+#   <dir> -con   Enter -> <dir> + `claude --resume` (pick a previous session)
+# A plain blank tab is still prefix+shift+c (new_tab, above).
+[[keys.command]]
+key = "prefix+c"
+type = "pane"
+command = "/Users/migbyte/.config/herdr/scripts/new-tab-zoxide.sh"
+
+# prefix+tab / prefix+shift+tab -> UNIFIED navigation: cycle focus forward/back
+# across every tab in every space (spaces switch automatically; agents ride along
+# because each lives in a tab). scripts/cycle-tabs.sh next|prev.
+[[keys.command]]
+key = "prefix+tab"
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/cycle-tabs.sh next"
+
+[[keys.command]]
+key = "prefix+shift+tab"
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/cycle-tabs.sh prev"
+
+# prefix+f -> focus-agent picker: fzf over all agents (name + dir), Enter focuses.
+# Runs in a throwaway pane (type = "pane"). scripts/agent-picker.sh.
+[[keys.command]]
+key = "prefix+f"
+type = "pane"
+command = "/Users/migbyte/.config/herdr/scripts/agent-picker.sh"
+
+# prefix+o -> instantly open a new tab in the CURRENT dir, no name prompt (auto-
+# named after the dir). scripts/new-tab-here.sh. (prefix+c is the zoxide picker;
+# prefix+shift+c is the plain blank tab that still prompts for a name.)
+[[keys.command]]
+key = "prefix+o"
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/new-tab-here.sh"
+
+# prefix+y -> new tab in the CURRENT dir, start tmux, and auto-run `flutter-watch`
+# in it (Flutter hot-reload on .dart saves). flutter-watch is a zsh function that
+# needs tmux, so the tab launches tmux first. scripts/flutter-watch-tab.sh.
+[[keys.command]]
+key = "prefix+y"
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/flutter-watch-tab.sh"
+
+# prefix+e -> open the focused pane's scrollback in nvim, IN COLOR (ANSI preserved)
+# and scrollable to the very top (captures --source recent, not just the viewport).
+# Opens in its own tab; q / Esc returns you to the source tab. scripts/edit-
+# scrollback.sh + scripts/scrollback-view.lua. (Replaces the built-in edit_scrollback.)
+# Note: full-screen apps that own the alt-screen — claude, wisp, nvim — have no
+# scrollback above the visible screen, so for those only the viewport is available.
+[[keys.command]]
+key = "prefix+e"
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/edit-scrollback.sh"
+
+# ---- Switch to agent 1-4 (the old kitty session/tab keys, now for agents) ---
+# focus-agent.sh N focuses the Nth agent in `herdr agent list` order. Direct
+# keys (no prefix) — they replace the goto_tab 1-4 kitty bindings.
+[[keys.command]]
+key = "ctrl+a"                 # was kitty goto_tab 1 -> agent 1
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/focus-agent.sh 1"
+
+[[keys.command]]
+key = "ctrl+alt+shift+z"       # was kitty goto_tab 2 -> agent 2
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/focus-agent.sh 2"
+
+[[keys.command]]
+key = "ctrl+s"                 # was kitty goto_tab 3 -> agent 3
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/focus-agent.sh 3"
+
+[[keys.command]]
+key = "ctrl+q"                 # was kitty goto_tab 4 -> agent 4
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/focus-agent.sh 4"
+
+# ---- Alternate tab (vim Ctrl-^) ------------------------------------------
+# Direct (no prefix) Ctrl-^ jumps back and forth between the current tab and the
+# one you were on before it — like vim's alternate file. Both ctrl+^ and ctrl+6
+# are bound because that key produces the same byte (0x1E) and herdr may name it
+# either way. Focus history is kept by scripts/alt-tab-tracker.sh (launchd:
+# com.migbyte.herdr-alt-tab), so it tracks switches made ANY way (prefix+a, a
+# click, alt+1..9, the cycle-tabs key). Logic in scripts/alt-tab.sh.
+[[keys.command]]
+key = "ctrl+^"
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/alt-tab.sh"
+
+[[keys.command]]
+key = "ctrl+6"
+type = "shell"
+command = "/Users/migbyte/.config/herdr/scripts/alt-tab.sh"
 
 # ============================================================================
 # tmux bindings with NO Herdr equivalent (left unmapped):
-#   copy-mode (prefix v / M-v) + copy-mode-vi yank/search
-#       -> use prefix+e (edit_scrollback) to open scrollback in your editor,
-#          or mouse-select. Herdr has no tmux-style copy-mode keymap.
+#   copy-mode-vi search (/ ?)  -> herdr's copy mode (prefix+s, documented
+#          above) covers movement/selection/yank but has no search yet;
+#          for searching scrollback use prefix+e (nvim) and / there.
 #   swap-window  < >      swap-pane  { }       break-pane  b
 #   join-pane    j / @    mark/unmark pane  m / M
 #   synchronize-panes s   display-panes  q     clear-history  C-l
-#   last-window  M-Tab    -> no last-tab action (cycle with alt+h / alt+l)
+#   last-window  M-Tab    -> now provided by Ctrl-^ (alt-tab.sh), vim-style
 #   sesh connect (prefix 9) -> tmux/sesh-specific; not applicable to Herdr
 # tmux plugins (tpm, resurrect, continuum, floax, thumbs, fzf-url, catppuccin)
 #   are tmux-only; Herdr has built-in themes, a workspace picker, and worktrees.

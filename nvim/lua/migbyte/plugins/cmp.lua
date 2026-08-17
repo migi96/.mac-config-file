@@ -4,8 +4,8 @@ return {
   "hrsh7th/nvim-cmp",
   event = "InsertEnter",
   dependencies = {
-    -- AI assistant source
-    "zbirenbaum/copilot-cmp",
+    -- AI assistant source (disabled while Copilot billing is locked; see copilot.lua)
+    -- "zbirenbaum/copilot-cmp",
 
     -- Snippet engine & sources
     {
@@ -68,7 +68,7 @@ return {
       }),
       -- Completion sources
       sources = cmp.config.sources({
-        { name = "copilot" },
+        -- { name = "copilot" }, -- disabled: Copilot billing locked (see copilot.lua)
         { name = "nvim_lsp" },
         { name = "luasnip" },
         { name = "buffer" },
@@ -82,7 +82,7 @@ return {
           ellipsis_char = "…",
           -- Show the source of the completion
           menu = {
-            copilot = "[AI]",
+            -- copilot = "[AI]",
             nvim_lsp = "[LSP]",
             luasnip = "[Snippet]",
             buffer = "[Buffer]",

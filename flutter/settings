@@ -2,5 +2,6 @@
   "enable-web": true,
   "enable-macos-desktop": true,
   "enable-ios": true,
-  "ios-signing-cert": "Apple Development: migdad ali (3PF5NHGB49)"
+  "ios-signing-cert": "Apple Development: migdad ali (3PF5NHGB49)",
+  "enable-swift-package-manager": false
 }

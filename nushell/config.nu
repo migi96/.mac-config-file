@@ -137,7 +137,10 @@ $env.config = {
     buffer_editor: "nvim"
     use_ansi_coloring: true
     bracketed_paste: true
-    edit_mode: vi
+    # emacs (not vi): standard readline-style line editing like other terminals.
+    # With vi mode, Escape enters "normal" mode where letters become motions and
+    # typing appears to do nothing — which felt like the terminal freezing.
+    edit_mode: emacs
     shell_integration: {
         osc2: true
         osc7: true
@@ -762,6 +765,14 @@ $env.config = {
             mode: emacs
             event: { edit: selectall }
         }
+        {
+            # Alt-s: sesh session picker (mirrors the zsh `\es` zle binding)
+            name: sesh_sessions
+            modifier: alt
+            keycode: char_s
+            mode: [emacs, vi_normal, vi_insert]
+            event: { send: executehostcommand, cmd: "sesh-sessions" }
+        }
     ]
 }
 
@@ -890,7 +901,8 @@ def clc [] {
 }
 
 # Flutter watch with tmux - split window and auto-reload on dart file changes
-def flutter-watch [...args: string] {
+# --wrapped so that flags like `--flavor staging` pass straight through into $args
+def --wrapped flutter-watch [...args: string] {
     let flutter_args = ($args | str join " ")
     tmux send-keys $"flutter run ($flutter_args) --pid-file=/tmp/tf1.pid" Enter
     tmux split-window -v
@@ -1022,6 +1034,78 @@ def ypng [] { yazi (fd --type f -e png . ~ | fzf) }
 def yjpg [] { yazi (fd --type f -e jpg -e jpeg . ~ | fzf) }
 def ysvg [] { yazi (fd --type f -e svg . ~ | fzf) }
 def yd [] { yazi (fd --type d . ~ | fzf) }
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Ported from .zshrc — additional aliases & functions
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Reload the shell / re-source config (equivalent of `shs` = `source ~/.zshrc`).
+# `source` is a parser keyword in nushell and cannot be re-run at runtime, so we
+# replace the current process with a fresh nu, which reloads env.nu + config.nu.
+def shs [] { exec nu }
+
+# ── herdr (terminal multiplexer) ──────────────────────────────────────────────
+alias hrc = herdr
+# hr — open a brand-new herdr instance (a fresh session each call)
+def --wrapped hr [...args] { herdr --session $"hr-(date now | format date '%s')" ...$args }
+
+# herdr equivalent of flutter-watch: flutter run in the current pane + a small
+# nodemon pane below that hot-reloads (kill -USR1) on every .dart save.
+def --wrapped herdr-watch [...args] {
+    let flutter_args = ($args | str join " ")
+    let cur = (herdr pane current --current | from json | get result.pane.pane_id)
+    herdr pane run $cur $"flutter run ($flutter_args) --pid-file=/tmp/tf1.pid"
+    let split = (herdr pane split $cur --direction down --ratio 0.1 --no-focus | from json | get result.pane.pane_id)
+    herdr pane run $split 'npx -y nodemon -e dart -x "cat /tmp/tf1.pid | xargs kill -s USR1"'
+}
+
+# ── Claude / AI ───────────────────────────────────────────────────────────────
+alias con = claude --resume
+alias clo = claude code
+
+# ── Misc tools ────────────────────────────────────────────────────────────────
+alias disk = vizex
+alias gd = diffnav
+# ar — fribidi (right-to-left text helper)
+def --wrapped ar [...args] { fribidi ...$args }
+# gh enhance with the kanagawa theme
+def --wrapped ghe [...args] { with-env {ENHANCE_THEME: "kanagawa"} { gh enhance ...$args } }
+# ylc — copy last command + its output to the clipboard (see clc above)
+alias ylc = clc
+
+# ── wisp (WhatsApp TUI) ───────────────────────────────────────────────────────
+# Instant launch of the built release binary; args pass through.
+def --wrapped wisp [...args] {
+    let bin = ($env.HOME | path join Projects wisp target release wisp)
+    ^$bin ...$args
+}
+# Rebuild-then-run variant — use after editing the source.
+def --wrapped wispd [...args] {
+    cargo run -q --release --manifest-path ($env.HOME | path join Projects wisp Cargo.toml) -- ...$args
+}
+
+# ── SSH / keys ────────────────────────────────────────────────────────────────
+alias alkeys = ssh-add -l
+alias showzk = ssh-keygen -lf ~/.ssh/alzien_hetzner
+alias verkey = cat ~/.ssh/alzien_hetzner.pub
+alias tcon = ssh -vvv alzien
+def confirmkey [] { ssh -G alzien | grep -E 'hostname|user|identityfile' }
+alias tdel = ssh thowb "/var/www/thowb/deploy.sh"
+alias pdel = ssh thowb "sudo systemctl restart thowb-mediapipe"
+
+# ── Flutter builds & runs (Alzien staging / production) ───────────────────────
+def zpr [] { flutter build appbundle --flavor production --release --dart-define=APP_ENV=production }
+def zst [] { flutter build appbundle --flavor staging --release --dart-define=APP_ENV=staging --dart-define=API_BASE_URL=https://backend-staging.alzien.com/v1-1 --dart-define=MEDIA_BASE_URL=https://media-staging.alzien.com }
+def als [] { flutter build apk --flavor staging --debug --dart-define=APP_ENV=staging --dart-define=API_BASE_URL=https://backend-staging.alzien.com/v1-1 --dart-define=MEDIA_BASE_URL=https://media-staging.alzien.com }
+def --wrapped alr [...args] { flutter run --flavor staging --dart-define=APP_ENV=staging --dart-define=API_BASE_URL=https://backend-staging.alzien.com/v1-1 --dart-define=MEDIA_BASE_URL=https://media-staging.alzien.com ...$args }
+def --wrapped alw [...args] { flutter-watch --flavor staging --dart-define=APP_ENV=staging --dart-define=API_BASE_URL=https://backend-staging.alzien.com/v1-1 --dart-define=MEDIA_BASE_URL=https://media-staging.alzien.com ...$args }
+def --wrapped hlw [...args] { herdr-watch --flavor staging --dart-define=APP_ENV=staging --dart-define=API_BASE_URL=https://backend-staging.alzien.com/v1-1 --dart-define=MEDIA_BASE_URL=https://media-staging.alzien.com ...$args }
+
+# ── sesh session picker (bound to Alt-s in keybindings above) ─────────────────
+def sesh-sessions [] {
+    let session = (sesh list -t -c | fzf --height 40% --reverse --border-label ' sesh ' --border --prompt '⚡  ')
+    if ($session | is-not-empty) { sesh connect ($session | str trim) }
+}
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Source External Configurations

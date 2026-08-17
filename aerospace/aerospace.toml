@@ -86,6 +86,17 @@ outer.right =      5
  cmd-alt-shift-y = "workspace 8"
  cmd-alt-shift-a = "workspace 9"
 
+# Move current window to workspace (same letters as switching, + ctrl)
+ cmd-ctrl-alt-shift-s = "move-node-to-workspace 1"
+ cmd-ctrl-alt-shift-d = "move-node-to-workspace 2"
+ cmd-ctrl-alt-shift-f = "move-node-to-workspace 3"
+ cmd-ctrl-alt-shift-g = "move-node-to-workspace 4"
+ cmd-ctrl-alt-shift-b = "move-node-to-workspace 5"
+ cmd-ctrl-alt-shift-u = "move-node-to-workspace 6"
+ cmd-ctrl-alt-shift-w = "move-node-to-workspace 7"
+ cmd-ctrl-alt-shift-y = "move-node-to-workspace 8"
+ cmd-ctrl-alt-shift-a = "move-node-to-workspace 9"
+
 # cmd-b = "workspace 5"
 
 

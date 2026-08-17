@@ -11,6 +11,19 @@
 
 return {
   "yetone/avante.nvim",
+  -- ============================================================================
+  -- TEMPORARILY DISABLED (2026-06-21)
+  -- ============================================================================
+  -- avante loads at startup (lazy=false) with provider="copilot", which hit the
+  -- GitHub Copilot API and failed with HTTP 403 "billing_locked" for account
+  -- `migi96` (recent charges failed -> billing locked). That threw the
+  -- copilot.lua:185 stack trace on every launch.
+  --
+  -- `cond = false` keeps the make-built plugin installed but never loads it, so
+  -- the error stops. To RE-ENABLE: delete this line (or set it back to true)
+  -- once Copilot billing is fixed at github.com/settings/billing, OR switch the
+  -- provider to "claude"/"openai" with an API key in the opts below.
+  cond = false,
   event = "VeryLazy", -- FIXED: was "VeryLlazy" (typo)
   lazy = false,
   version = false,    -- Never set this to "*"!

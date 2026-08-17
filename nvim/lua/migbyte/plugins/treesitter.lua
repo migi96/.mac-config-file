@@ -24,6 +24,7 @@ return {
         "bash", "lua", "vim", "dockerfile", "gitignore", "query", "vimdoc", "c",
         "http", -- ADDED: The parser required for rest.nvim
         "regex", -- ADDED: Required by noice.nvim for cmdline regex highlighting
+        "java", -- ADDED: Syntax highlighting & indentation for Java (nvim-java)
       },
       incremental_selection = {
         enable = true,

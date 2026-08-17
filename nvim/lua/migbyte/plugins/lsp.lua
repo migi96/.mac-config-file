@@ -31,6 +31,14 @@ return {
       mason_lspconfig.setup({
         ensure_installed = servers,
 
+        -- jdtls is owned by nvim-java (see plugins/java.lua). Excluding it here
+        -- stops mason-lspconfig from auto-enabling jdtls with a generic config
+        -- the moment nvim-java installs the Mason package, which would clobber
+        -- nvim-java's DAP/lombok/spring bundles.
+        automatic_enable = {
+          exclude = { "jdtls" },
+        },
+
         -- NEW: handlers table replaces setup_handlers ▼
         handlers = {
           -- default for every server we didn’t override

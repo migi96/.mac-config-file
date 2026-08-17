@@ -378,3 +378,11 @@ keymap = [
 [[mgr.prepend_keymap]]
 on  = "M"
 run = "plugin mount"
+
+# Send the SELECTED files to wisp (WhatsApp): stages the paths in a trigger file
+# wisp watches, then focuses the wisp herdr tab where its chat picker opens.
+# Overrides the default `w` = tasks_show. `%s` = selected files (yazi 26 syntax).
+[[mgr.prepend_keymap]]
+on  = "w"
+run = "shell -- /Users/migbyte/.config/yazi/scripts/wisp-send.sh %s"
+desc = "Send selected files to wisp"

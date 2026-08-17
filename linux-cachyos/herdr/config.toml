@@ -1,0 +1,167 @@
+onboarding = false
+# ============================================================================
+# Herdr configuration  —  ~/.config/herdr/config.toml   (LINUX / CachyOS)
+# Ported from the macOS config. herdr + wisp are cross-platform Rust apps, so
+# every built-in keybinding below works unchanged. The only macOS-specific
+# pieces were the [[keys.command]] custom scripts (they call pbcopy / osascript /
+# screencapture / launchd) — those are commented out at the bottom until ported.
+# Reload after edits:   herdr server reload-config
+# Print all defaults:   herdr --default-config
+# ============================================================================
+
+[theme]
+name = "gruvbox"
+auto_switch = false
+
+# ---- New-tab behavior ----------------------------------------------------
+[terminal]
+new_cwd = "follow"              # new tab/pane opens in the current tab's dir
+
+[ui]
+prompt_new_tab_name = true      # prompt for a tab name when creating a new tab
+agent_panel_sort = "priority"
+
+[keys]
+# tmux prefix was ^N  (default Ctrl-b -> Ctrl-n)
+prefix = "ctrl+n"
+
+# ---- General -------------------------------------------------------------
+reload_config   = "prefix+shift+r"
+copy_mode       = "prefix+v"          # scroll + select + yank (h/j/k/l, g/G, v, y)
+
+# ---- Tabs  (= tmux windows) ----------------------------------------------
+new_tab      = "prefix+shift+c"
+rename_tab   = "prefix+comma"
+next_tab     = "prefix+a"
+previous_tab = "prefix+shift+a"
+switch_tab   = "prefix+1..9"
+close_tab    = "prefix+shift+x"
+
+# ---- Panes ---------------------------------------------------------------
+split_vertical   = "prefix+|"
+split_horizontal = "prefix+minus"
+focus_pane_left  = "ctrl+h"
+focus_pane_right = "ctrl+l"
+focus_pane_down  = "prefix+j"
+focus_pane_up    = "prefix+k"
+close_pane       = "prefix+x"
+zoom             = "prefix+z"
+resize_mode      = "prefix+ctrl+r"
+rename_pane      = "prefix+shift+p"
+cycle_pane_next     = ""
+cycle_pane_previous = ""
+
+# ---- Agents --------------------------------------------------------------
+next_agent     = "prefix+/"
+previous_agent = "prefix+r"
+focus_agent    = ""
+
+# ---- Workspaces / "spaces"  (= tmux sessions) ----------------------------
+workspace_picker   = "prefix+ctrl+p"
+new_workspace      = "prefix+ctrl+c"
+new_worktree       = "ctrl+alt+a"
+rename_workspace   = "prefix+u"
+close_workspace    = "prefix+shift+q"
+next_workspace     = "alt+tab"
+previous_workspace = "alt+shift+tab"
+
+# ---- UI / misc -----------------------------------------------------------
+toggle_sidebar = "prefix+shift+s"
+detach         = "prefix+d"
+settings       = "prefix+l"
+help           = "prefix+?"
+goto           = "prefix+g"
+open_notification_target = "prefix+shift+o"
+
+# Direct Alt+1..9 -> jump to tab N
+[keys.indexed]
+tabs = "alt"
+
+# ---- Graphics ------------------------------------------------------------
+# Kitty graphics passthrough (wisp renders WhatsApp images inline). Ghostty and
+# kitty both support this on Linux/Wayland.
+[experimental]
+kitty_graphics = true
+# macOS-only knob (switched the system input source in prefix). No effect on
+# Linux — layout switching is handled by Hyprland's kb_options — left false.
+switch_ascii_input_source_in_prefix = false
+
+# ============================================================================
+# CUSTOM COMMANDS — macOS-scripted, disabled on Linux until ported.
+# Re-enable a block once you've rewritten its script for Linux (the herdr CLI
+# calls inside them are portable; the OS tools around them are the mac bits:
+#   pbcopy → wl-copy   |  screencapture → grim  |  osascript/launchd → (drop)  |
+#   ~/Downloads + ~/Desktop screenshot staging → adjust paths for Linux).
+# All scripts live in ~/.config/herdr/scripts/ — copy them over, port, uncomment.
+# ============================================================================
+# [[keys.command]]              # prefix+t -> launch/focus the wisp (WhatsApp) tab
+# key = "prefix+t"
+# type = "shell"
+# command = "~/.config/herdr/scripts/wisp-tab.sh"
+#
+# [[keys.command]]              # prefix+n -> recent-files browser (yazi)
+# key = "prefix+n"
+# type = "shell"
+# command = "~/.config/herdr/scripts/recent-files.sh"
+#
+# [[keys.command]]              # prefix+c -> zoxide+fzf new-tab picker
+# key = "prefix+c"
+# type = "pane"
+# command = "~/.config/herdr/scripts/new-tab-zoxide.sh"
+#
+# [[keys.command]]              # prefix+tab / prefix+shift+tab -> cycle all tabs
+# key = "prefix+tab"
+# type = "shell"
+# command = "~/.config/herdr/scripts/cycle-tabs.sh next"
+# [[keys.command]]
+# key = "prefix+shift+tab"
+# type = "shell"
+# command = "~/.config/herdr/scripts/cycle-tabs.sh prev"
+#
+# [[keys.command]]              # prefix+f -> fzf focus-agent picker
+# key = "prefix+f"
+# type = "pane"
+# command = "~/.config/herdr/scripts/agent-picker.sh"
+#
+# [[keys.command]]              # prefix+o -> new tab in current dir (no prompt)
+# key = "prefix+o"
+# type = "shell"
+# command = "~/.config/herdr/scripts/new-tab-here.sh"
+#
+# [[keys.command]]              # prefix+y -> new tab running flutter-watch
+# key = "prefix+y"
+# type = "shell"
+# command = "~/.config/herdr/scripts/flutter-watch-tab.sh"
+#
+# [[keys.command]]              # prefix+e -> open scrollback in nvim (in color)
+# key = "prefix+e"
+# type = "shell"
+# command = "~/.config/herdr/scripts/edit-scrollback.sh"
+#
+# --- Direct (no-prefix) jump to agent 1-4 ---
+# [[keys.command]]
+# key = "ctrl+a"
+# type = "shell"
+# command = "~/.config/herdr/scripts/focus-agent.sh 1"
+# [[keys.command]]
+# key = "ctrl+alt+shift+z"
+# type = "shell"
+# command = "~/.config/herdr/scripts/focus-agent.sh 2"
+# [[keys.command]]
+# key = "ctrl+s"
+# type = "shell"
+# command = "~/.config/herdr/scripts/focus-agent.sh 3"
+# [[keys.command]]
+# key = "ctrl+q"
+# type = "shell"
+# command = "~/.config/herdr/scripts/focus-agent.sh 4"
+#
+# --- Alternate tab (vim Ctrl-^) — needs alt-tab-tracker daemon ported ---
+# [[keys.command]]
+# key = "ctrl+^"
+# type = "shell"
+# command = "~/.config/herdr/scripts/alt-tab.sh"
+# [[keys.command]]
+# key = "ctrl+6"
+# type = "shell"
+# command = "~/.config/herdr/scripts/alt-tab.sh"

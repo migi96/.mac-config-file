@@ -3,6 +3,11 @@
 return {
   "CopilotC-Nvim/CopilotChat.nvim",
 
+  -- TEMPORARILY DISABLED (2026-06-21): shares the billing-locked Copilot account
+  -- (migi96). Key-lazy so it won't prompt at startup, but it would error on use.
+  -- `cond = false` keeps it installed; remove this line once billing is restored.
+  cond = false,
+
   -- REMOVED: The incorrect `branch = "master"` line has been deleted.
   -- lazy.nvim will now automatically use the correct default branch ('main').
 

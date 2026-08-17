@@ -1,5 +1,15 @@
 return {
   "zbirenbaum/copilot.lua",
+  -- ==========================================================================
+  -- TEMPORARILY DISABLED (2026-06-21)
+  -- ==========================================================================
+  -- This client loads at startup (lazy=false) and authenticates with GitHub on
+  -- every launch. Account `migi96` is billing-locked, so that auth fails and
+  -- pops the GitHub-account / billing notification each time nvim opens.
+  -- `cond = false` keeps it installed but never loads it -> no more prompt.
+  -- RE-ENABLE: remove this line once Copilot billing is fixed, and uncomment the
+  -- copilot bits in cmp.lua (copilot-cmp dependency + the "copilot" source).
+  cond = false,
   lazy = false,
   priority = 900,
   dependencies = {

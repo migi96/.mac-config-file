@@ -1,29 +1,255 @@
-# Ghostty Configuration
-# FontSettings
-font-family= ProFontIIxNerdFont-Regular
-# Fallback font for Arabic glyphs
-font-family = "Noto Sans Arabic"
-font-size = 24
+# Ghostty config — ported 1:1 from ~/.config/kitty/kitty.conf
+# Ghostty 1.3.1. Validate after editing:
+#   /Applications/Ghostty.app/Contents/MacOS/ghostty +validate-config
+#
+# Everything above the "KEPT" section at the bottom is kitty parity.
+# The cmd+n leader chords, splits and copy-on-select are preserved from the
+# previous ghostty config — kitty has no counterpart to those, so nothing is lost.
 
-# Colours & transparency
-theme = ayu
+# ─────────────────────────────────────────────
+# Shell — use the login zsh (nushell retired: atuin history only works in zsh)
+# ─────────────────────────────────────────────
+# No `command` override: ghostty launches the default login shell (/bin/zsh) as
+# a login+interactive shell, so ~/.zprofile (brew shellenv, PATH) and ~/.zshrc
+# both load — same as kitty.
+# command = /opt/homebrew/bin/nu
+
+# `detect` lets ghostty auto-inject its zsh shell integration (OSC 133/7/8,
+# cursor, sudo, title). Was `none` only because nushell self-integrated.
+shell-integration = detect
+
+# ─────────────────────────────────────────────
+# Font
+# ─────────────────────────────────────────────
+# NOTE: ghostty matches on FAMILY name ("ProFont IIx Nerd Font"), not the
+# PostScript name kitty uses ("ProFontIIxNerdFont-Regular"). It will NOT show up
+# in `ghostty +list-fonts` (that only enumerates strict-monospace families) but it
+# does resolve — verify with:
+#   ghostty +show-face --string=A --font-family="ProFont IIx Nerd Font"
+font-family = ProFont IIx Nerd Font
+font-size = 20
+# bold/italic/bold-italic left unset == kitty's `auto`
+# (ghostty derives the styled faces from the family, synthesizing if absent)
+
+# ─────────────────────────────────────────────
+# Arabic → Kawkab Mono   (kitty: symbol_map)
+# ─────────────────────────────────────────────
+# NOTE: this REPLACES the old `font-family = "Noto Sans Arabic"` fallback, which
+# was actively broken — see constraint 2 below. Noto Sans Arabic is proportional,
+# so it was getting clipped and never connecting across cells.
+#
+# Kawkab Mono is patched IN PLACE (~/Library/Fonts/KawkabMono-{Regular,Bold}.otf)
+# by ~/.config/kitty/fonts/build-tajawal-wisp.py (--keep-name; pristine originals
+# in ~/.config/kitty/fonts/orig/).
+#
+# Constraints that led here — these apply to ghostty EXACTLY as they did to kitty,
+# since ghostty also does no Arabic shaping/BiDi and also renders one codepoint
+# per fixed-width cell:
+#  1. wisp pre-shapes text into Presentation Forms (U+FB50-FDFF / U+FE70-FEFF), so
+#     the font must have CMAP ENTRIES for those codepoints. Most modern fonts omit
+#     the ISOLATED forms (Tajawal and Kawkab both did; public Geeza Pro has none at
+#     all) → the script fills them with the font's own base glyphs (lossless;
+#     U+FE80-U+FEFC verified complete with fc-query).
+#  2. A PROPORTIONAL Arabic font (Tajawal, Geeza, SF Arabic, Noto Sans Arabic) gets
+#     clipped and never connects across cells. Kawkab Mono is Arabic DESIGNED for
+#     terminal cells — uniform advances, connectors drawn to reach the cell edges —
+#     so letters join.
+#  3. NEVER rename a CFF/OTF font's name table: its PostScript name also lives
+#     inside the CFF table, and on a mismatch CoreText refuses to register the font
+#     — the renamed family silently never resolves and you get .notdef squares from
+#     the main font. Hence the in-place --keep-name patch.
+#
+# The ranges below are EXACTLY the patched font's verified coverage — never widen
+# them past what `fc-query --format='%{charset}'` reports, or the uncovered
+# codepoints render in a mismatched fallback font.
+font-codepoint-map = U+060C,U+0615,U+061B,U+061F,U+0621-U+063A,U+0640-U+0656,U+0658,U+0660-U+0671=Kawkab Mono
+font-codepoint-map = U+0679,U+067E,U+0686,U+0688,U+0691,U+0698,U+06A1,U+06A4,U+06A9,U+06AF,U+06BA,U+06BE,U+06C1-U+06C3,U+06CC,U+06D2-U+06D4,U+06F0-U+06F9=Kawkab Mono
+font-codepoint-map = U+FB50-U+FB51,U+FB56-U+FB59,U+FB66-U+FB6D,U+FB7A-U+FB7D,U+FB88-U+FB95,U+FB9E-U+FB9F,U+FBA6-U+FBB9,U+FBBD-U+FBBE,U+FBFC-U+FBFF=Kawkab Mono
+font-codepoint-map = U+FCCC,U+FCD1,U+FD3E-U+FD3F,U+FDF2,U+FE80-U+FEFC=Kawkab Mono
+
+# ─────────────────────────────────────────────
+# Cursor
+# ─────────────────────────────────────────────
 cursor-style = block
-adjust-cell-height = 35%
+# kitty `cursor_shape_unfocused hollow` — ghostty ALWAYS draws the unfocused cursor
+# hollow. It's built in and has no config key, so this needs nothing set.
+#
+# kitty `cursor_trail 10` / `cursor_trail_start_threshold 3` have NO ghostty
+# equivalent (1.3.1 ships no cursor-trail feature at all). Dropped.
+#
+# Your old purple cursor — dropped for kitty parity (kitty sets no cursor color, so
+# it follows the foreground). Uncomment if you miss it:
+# cursor-color = #5C58EB
+
+# ─────────────────────────────────────────────
+# Colors
+# ─────────────────────────────────────────────
+# `theme = ayu` is gone: kitty defines its palette explicitly, and a theme would
+# fight these values. Same reasoning for `window-colorspace = display-p3` — kitty
+# renders sRGB, so P3 would push these exact colors more saturated than kitty shows.
+foreground = #dddddd
+background = #1a1a1a
+
+# Selection: kitty had selection_foreground/background = none, i.e. reverse video.
+# Leaving BOTH unset in ghostty gives exactly that (inverted fg/bg). Do not set them.
+
+palette = 0=#000000
+palette = 8=#767676
+palette = 1=#cc0403
+palette = 9=#f2201f
+palette = 2=#19cb00
+palette = 10=#23fd00
+palette = 3=#cecb00
+palette = 11=#ffff00
+palette = 4=#0d73cc
+palette = 12=#1a8fff
+palette = 5=#cb1ed1
+palette = 13=#fd28ff
+palette = 6=#0dcdcd
+palette = 14=#14ffff
+palette = 7=#dddddd
+palette = 15=#ffffff
+
+# ─────────────────────────────────────────────
+# Background image
+# ─────────────────────────────────────────────
+# HEADS UP: /Users/migbyte/migbyte_two.png DOES NOT EXIST on this machine. The path
+# came over in the "Initial mac mini config dump" commit and the png never followed,
+# so kitty isn't drawing it either. Ghostty treats the missing file as a non-fatal
+# warning, so this is left live: drop the png at that path and BOTH terminals light up.
+background-image = /Users/migbyte/migbyte_two.png
+# kitty `background_image_layout scaled` == fill the window, ignore aspect ratio
+background-image-fit = stretch
+background-image-position = center
+# kitty `background_tint 0.2` tints the image 20% toward the bg color, i.e. the image
+# reads at ~80%. Ghostty has no tint; image opacity is the equivalent knob.
+background-image-opacity = 0.8
+
+# ─────────────────────────────────────────────
+# Opacity / blur
+# ─────────────────────────────────────────────
+# Fully opaque + no blur = fastest: no transparency compositing and no GPU blur
+# pass every frame (background-blur = 25 was the single biggest cost here).
+# To get the translucent look back: `background-opacity = 0.9` and
+# `background-blur = 20` (blur is the expensive part — raise it cautiously).
+background-opacity = 1
+background-blur = false
+# kitty `dynamic_background_opacity no` has no ghostty equivalent — ghostty has no
+# runtime opacity changes at all, so `no` was already the effective behavior.
+
+# ─────────────────────────────────────────────
+# macOS
+# ─────────────────────────────────────────────
+# Required for the ctrl+alt+* keybinds below to fire.
+macos-option-as-alt = true
+
+# kitty's default window_padding_width is 0; ghostty's is 2. Match kitty.
+# (This is also why the old `window-padding-balance` is gone — a no-op at padding 0.)
+window-padding-x = 0
+window-padding-y = 0
+
+# `adjust-cell-height = 35%` is dropped: kitty adds no extra line spacing, and 35%
+# taller cells is the single biggest visual difference from kitty. Re-add if you
+# actually preferred the roomier lines.
+
+# ─────────────────────────────────────────────
+# nchat: Cmd+J → Alt+J (sends Esc+j) for goto chat
+# ─────────────────────────────────────────────
+keybind = cmd+j=text:\x1bj
+
+# herdr prefix (ctrl+n) must fire regardless of the ACTIVE KEYBOARD LAYOUT.
+# With the Arabic layout active, plain ctrl+n maps through the layout and
+# does not produce the 0x0E control byte, so herdr never sees the prefix
+# ("sometimes the prefix does not trigger"). Binding it here makes Ghostty
+# send the byte itself, layout-independent.
+keybind = ctrl+n=text:\x0e
+
+# Ctrl+C = cancel / SIGINT, on ANY layout. Same problem as ctrl+n above: with the
+# Arabic layout active, plain ctrl+c maps through the layout and never produces
+# 0x03 (ETX), so it stops cancelling. Binding it to the raw interrupt byte makes
+# Ctrl+C always act as "cancel", exactly like kitty and every other terminal.
+# (macOS copy is Cmd+C, so this does not clash with copy; and herdr's
+#  prefix+ctrl+c already expects this same 0x03 byte, so that still works too.)
+keybind = ctrl+c=text:\x03
+
+# ─────────────────────────────────────────────
+# Sessions / Tabs — Colemak-DH Home Row
+# Home row: a r s t | n e i o  →  tabs 1–8
+# ─────────────────────────────────────────────
+
+# ctrl+<key> → go to tab N
+# Session (tab) 1-4 navigation moved to Herdr (agents on prefix+1..9). Disabled here.
+# keybind = ctrl+a=goto_tab:1
+# keybind = ctrl+alt+shift+z=goto_tab:2
+# keybind = ctrl+s=goto_tab:3
+# keybind = ctrl+q=goto_tab:4
+keybind = f14=goto_tab:5
+keybind = f4=goto_tab:6
+keybind = ctrl+f1=goto_tab:7
+keybind = f17=goto_tab:8
+
+# ctrl+shift+<key> → move current tab to position N
+keybind = ctrl+shift+a=move_tab:1
+keybind = ctrl+shift+r=move_tab:1
+keybind = ctrl+shift+s=move_tab:-1
+keybind = ctrl+shift+t=move_tab:-1
+keybind = ctrl+shift+n=goto_tab:5
+keybind = ctrl+shift+e=goto_tab:6
+keybind = ctrl+shift+i=goto_tab:7
+keybind = ctrl+shift+o=goto_tab:8
+
+# ctrl+alt+<key> → tab management actions
+# Creating a new session (tab) is handled by Herdr now. Disabled here.
+# keybind = ctrl+alt+a=new_tab
+# keybind = ctrl+alt+r=new_tab   ← ghostty always opens new tabs in the cwd, so it
+#                                  needs no separate new_tab_with_cwd like kitty did
+keybind = ctrl+alt+n=next_tab
+keybind = ctrl+alt+e=previous_tab
+keybind = ctrl+alt+i=move_tab:1
+keybind = ctrl+alt+o=close_tab
+
+# ─────────────────────────────────────────────
+# Reload config (no restart needed)
+# ─────────────────────────────────────────────
+keybind = ctrl+shift+f5=reload_config
+
+# ─────────────────────────────────────────────
+# DROPPED — needs kitty remote control, which ghostty has no equivalent for
+# ─────────────────────────────────────────────
+# Ghostty ships no control socket (no `ghostty @`, no `allow_remote_control` /
+# `listen_on`) and no overlay windows (no `launch --type=overlay`). Every one of
+# these kitty binds drove a script in ~/.config/kitty/ through `kitty @`, so none of
+# them can be ported as-is:
+#
+#   ctrl+alt+s         rename_tab.sh           → rename a tab
+#   ctrl+alt+t         detach_tab              → (ghostty has no such action at all)
+#   ctrl+alt+f         fzf_tab.sh              → fzf across open tabs
+#   ctrl+alt+f8        save_all_sessions.sh    → save all tabs/panes/scrollback
+#   ctrl+alt+shift+f9  save_current_session.sh → save current tab
+#   ctrl+alt+f4        restore_last_session.sh → restore most recent snapshot
+#   ctrl+alt+f3        fzf_session.sh          → fzf a saved session to restore
+#   f1                 kitty_commands.sh       → last command output → nvim
+#
+# These keys are left UNBOUND, so they pass straight through to the shell/tmux.
+# tmux already covers the session-save + fzf-switch ground and Herdr owns agent
+# tabs, so that's where to rebuild them if you want them back.
+# `window-save-state = always` below is the closest native substitute for the
+# session save/restore scripts.
+
+# ─────────────────────────────────────────────
+# KEPT from the previous ghostty config
+# (kitty has no equivalent for any of this, so none of it conflicts)
+# ─────────────────────────────────────────────
+copy-on-select = clipboard
 mouse-hide-while-typing = true
-window-padding-balance = true
 window-save-state = always
-window-colorspace = "display-p3"
-background = #19202F 
-cursor-color = #5C58EB
 
-# Shell command for skitty-notes
-
-# keybindings
+# cmd+n leader chords
 keybind = cmd+n>n=new_window
 keybind = cmd+n>r=reload_config
 keybind = cmd+n>x=close_surface
 
-# tabs 
+# tabs
 keybind = cmd+n>e=new_tab
 keybind = cmd+n>f=next_tab
 keybind = cmd+n>d=previous_tab
@@ -41,7 +267,7 @@ keybind = cmd+n>7=goto_tab:7
 keybind = cmd+n>8=goto_tab:8
 keybind = cmd+n>9=goto_tab:9
 
-# split
+# splits
 keybind = cmd+n>g=new_split:right
 keybind = cmd+n>w=new_split:down
 
@@ -52,7 +278,3 @@ keybind = cmd+n>l=goto_split:right
 
 keybind = cmd+n>t=toggle_split_zoom
 keybind = cmd+n>i=equalize_splits
-
-# other
-copy-on-select = clipboard
-

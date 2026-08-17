@@ -1,0 +1,56 @@
+/* Waybar style — ~/.config/waybar/style.css
+   Palette matches your terminal (bg #1a1a1a, fg #dddddd) + aerospace border tones. */
+
+* {
+  font-family: "ProFont IIx Nerd Font", "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+}
+
+window#waybar {
+  background: rgba(26, 26, 26, 0.92);   /* #1a1a1a @ 92% */
+  color: #dddddd;
+}
+
+#workspaces { margin-left: 6px; }
+
+#workspaces button {
+  padding: 0 8px;
+  margin: 4px 2px;
+  color: #767676;
+  background: transparent;
+  border-radius: 6px;
+}
+
+#workspaces button.active {
+  color: #1a1a1a;
+  background: #e1e3e4;          /* aerospace active border color */
+}
+
+#workspaces button.empty { color: #494d64; }   /* aerospace inactive border color */
+
+#workspaces button:hover {
+  background: #494d64;
+  color: #dddddd;
+}
+
+#submap {
+  color: #ffff00;
+  margin: 4px 4px;
+}
+
+#window { color: #dddddd; }
+
+#clock, #cpu, #memory, #network, #pulseaudio, #tray {
+  padding: 0 10px;
+  margin: 4px 2px;
+  background: rgba(73, 77, 100, 0.25);
+  border-radius: 6px;
+}
+
+#clock { color: #ffffff; }
+#network { color: #23fd00; }
+#network.disconnected { color: #f2201f; }
+#pulseaudio.muted { color: #767676; }
